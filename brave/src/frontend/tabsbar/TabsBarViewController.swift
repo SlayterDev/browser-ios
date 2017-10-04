@@ -26,7 +26,7 @@ class TabBarCell: UICollectionViewCell {
     let title = UILabel()
     let close = UIButton()
     let separatorLine = UIView()
-    var browser: Browser? {
+    weak var browser: Browser? {
         didSet {
             if let wv = self.browser?.webView {
                 wv.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
