@@ -121,7 +121,7 @@ class BraveScrollController: NSObject {
             self.footer?.layer.transform = CATransform3DIdentity
             if self.headerTopOffset < 0 {
                 self.headerTopOffset = -BraveURLBarView.CurrentHeight
-                self.footerBottomOffset = UIConstants.ToolbarHeight
+                self.footerBottomOffset = UIConstants.BottomToolbarHeight
             } else {
                 self.headerTopOffset = 0
                 self.footerBottomOffset = 0
@@ -166,7 +166,7 @@ class BraveScrollController: NSObject {
             RuntimeInsetChecks.isRunningCheck = false
 
             if !isScrollHeightIsLargeEnoughForScrolling() && !keyboardIsShowing {
-                let h = BraveApp.isIPhonePortrait() ? UIConstants.ToolbarHeight + BraveURLBarView.CurrentHeight : BraveURLBarView.CurrentHeight
+                let h = BraveApp.isIPhonePortrait() ? UIConstants.BottomToolbarHeight + BraveURLBarView.CurrentHeight : BraveURLBarView.CurrentHeight
                 setBottomInset(h)
             }
             else {
@@ -195,7 +195,7 @@ class BraveScrollController: NSObject {
         
         if verticalTranslation < 0 && headerTopOffset == 0 {
             headerTopOffset = -BraveURLBarView.CurrentHeight
-            footerBottomOffset = UIConstants.ToolbarHeight
+            footerBottomOffset = UIConstants.BottomToolbarHeight
             urlBar?.updateAlphaForSubviews(0)
         } else if verticalTranslation > UIConstants.ToolbarHeight / 2.0 && headerTopOffset != 0 {
             headerTopOffset = 0
@@ -335,7 +335,7 @@ private extension BraveScrollController {
             header.layer.pop_add(animation, forKey: "headerTranslation")
         }
 
-        let footerTranslation = verticalTranslation > UIConstants.ToolbarHeight ? -UIConstants.ToolbarHeight : -verticalTranslation
+        let footerTranslation = verticalTranslation > UIConstants.BottomToolbarHeight ? -UIConstants.BottomToolbarHeight : -verticalTranslation
         
         if let footer = footer, let animation = POPBasicAnimation(propertyNamed: kPOPLayerTranslationY) {
             footer.layer.pop_removeAnimation(forKey: "footerTranslation")

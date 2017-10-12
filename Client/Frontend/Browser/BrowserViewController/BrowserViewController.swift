@@ -588,7 +588,7 @@ class BrowserViewController: UIViewController {
         updateSnackBarConstraints()
         footerBackground?.snp.remakeConstraints { make in
             make.left.right.equalTo(self.footer)
-            make.height.equalTo(UIConstants.ToolbarHeight)
+            make.height.equalTo(UIConstants.ToolbarHeight) // Set this to toolbar height. Use BottomToolbarHeight for hiding footer
             if #available(iOS 11.0, *) {
                 make.bottom.equalTo(self.view).inset(self.view.safeAreaInsets.bottom)
             } else {
