@@ -574,7 +574,7 @@ class BrowserViewController: UIViewController {
             make.top.left.right.equalTo(self.view)
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
-
+        
         footer.snp.remakeConstraints { make in
             scrollController.footerBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
             make.top.equalTo(self.snackBars.snp.top)
@@ -587,8 +587,13 @@ class BrowserViewController: UIViewController {
 
         updateSnackBarConstraints()
         footerBackground?.snp.remakeConstraints { make in
-            make.bottom.left.right.equalTo(self.footer)
+            make.left.right.equalTo(self.footer)
             make.height.equalTo(UIConstants.ToolbarHeight)
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(self.view).inset(self.view.safeAreaInsets.bottom)
+            } else {
+                make.bottom.equalTo(self.view)
+            }
         }
         urlBar.setNeedsUpdateConstraints()
 
@@ -1167,9 +1172,11 @@ extension BrowserViewController: Themeable {
         case Theme.NormalMode:
             statusBarOverlay.backgroundColor = BraveUX.ToolbarsBackgroundSolidColor
             footerBackground?.backgroundColor = BraveUX.ToolbarsBackgroundSolidColor
+            footer?.backgroundColor = BraveUX.ToolbarsBackgroundSolidColor
         case Theme.PrivateMode:
             statusBarOverlay.backgroundColor = BraveUX.DarkToolbarsBackgroundSolidColor
             footerBackground?.backgroundColor = BraveUX.DarkToolbarsBackgroundSolidColor
+            footer?.backgroundColor = BraveUX.DarkToolbarsBackgroundSolidColor
         default:
             log.debug("Unknown Theme \(themeName)")
         }
