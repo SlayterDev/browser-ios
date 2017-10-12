@@ -486,7 +486,11 @@ class TabTrayController: UIViewController {
             }
 
             addTabButton.snp.makeConstraints { make in
-                make.bottom.equalTo(self.view)
+                if #available(iOS 11.0, *) {
+                    make.bottom.equalTo(self.view).inset(getApp().window?.safeAreaInsets.bottom ?? 0)
+                } else {
+                    make.bottom.equalTo(self.view)
+                }
                 make.centerX.equalTo(self.view)
                 make.size.equalTo(UIConstants.ToolbarHeight)
             }
