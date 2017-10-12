@@ -227,7 +227,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         navBar?.clipsToBounds = true
         
         let width = self.view.bounds.size.width
-        var toolbarHeight = CGFloat(44)
+        let toolbarHeight = CGFloat(44)
         
         editBookmarksToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: width, height: toolbarHeight))
         createEditBookmarksToolbar()

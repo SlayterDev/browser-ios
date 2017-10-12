@@ -76,7 +76,7 @@ class BraveApp {
         if #available(iOS 11.0, *) {
             if isIPhonePortrait() && getApp().window!.safeAreaInsets.top > 0 {
                 return true
-            } else if isIPhonePortrait() && (getApp().window!.safeAreaInsets.left > 0 || getApp().window!.safeAreaInsets.right > 0) {
+            } else if isIPhoneLandscape() && (getApp().window!.safeAreaInsets.left > 0 || getApp().window!.safeAreaInsets.right > 0) {
                 return true
             }
         }
