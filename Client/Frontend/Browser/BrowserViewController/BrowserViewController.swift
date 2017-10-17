@@ -412,6 +412,7 @@ class BrowserViewController: UIViewController {
 
     var headerHeightConstraint: Constraint?
     var webViewContainerTopOffset: Constraint?
+    var webViewHeightConstraint: Constraint?
 
     func setupConstraints() {
         
@@ -596,6 +597,18 @@ class BrowserViewController: UIViewController {
             }
         }
         urlBar.setNeedsUpdateConstraints()
+        
+        webViewContainer.snp.remakeConstraints { make in
+            make.left.right.equalTo(self.view)
+            make.top.equalTo(self.header.snp.bottom)
+            
+            let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
+            if let toolbar = self.toolbar {
+                make.bottom.equalTo(toolbar.snp.top).offset(-findInPageHeight)
+            } else {
+                make.bottom.equalTo(self.view).offset(-findInPageHeight)
+            }
+        }
 
         // Remake constraints even if we're already showing the home controller.
         // The home controller may change sizes if we tap the URL bar while on about:home.
@@ -702,9 +715,6 @@ class BrowserViewController: UIViewController {
         urlBar.leaveSearchMode()
 
         _ = tab.loadRequest(URLRequest(url: url))
-        
-        // TODO: Need to preserve tab on submit, difficult because history data dictates load index - on submit url isn't loaded webivew into history stack.
-//        TabMO.preserveTab(tab: tab)
     }
 
     func addBookmark(_ url: URL?, title: String?, parentFolder: Bookmark? = nil) {

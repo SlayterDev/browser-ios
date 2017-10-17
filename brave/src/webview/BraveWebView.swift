@@ -167,7 +167,6 @@ class BraveWebView: UIWebView {
             return false
         }
         
-        print(location.domainURL)
         if AboutUtils.isAboutHomeURL(location) {
             return false
         }
@@ -271,7 +270,6 @@ class BraveWebView: UIWebView {
 
     fileprivate func commonInit() {
         BraveWebView.allocCounter += 1
-        print("webview init  \(BraveWebView.allocCounter)")
         generateUniqueUserAgent()
 
         progress = WebViewProgress(parent: self)
@@ -353,8 +351,6 @@ class BraveWebView: UIWebView {
         }) { (exception) -> Void in
             print("Failed remove: \(exception)")
         }
-
-        print("webview deinit \(title) ")
     }
 
     var blankTargetUrl: String?
@@ -422,7 +418,6 @@ class BraveWebView: UIWebView {
         }
         setLoadCompletedHtmlProperty()
 
-        print("loadingCompleted() ••••")
         progress?.setProgress(1.0)
         broadcastToPageStateDelegates()
 
@@ -686,7 +681,6 @@ extension BraveWebView: UIWebViewDelegate {
 
         if url.absoluteString == blankTargetUrl {
             blankTargetUrl = nil
-            print(url)
             getApp().browserViewController.openURLInNewTab(url)
             return false
         }

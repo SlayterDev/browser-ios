@@ -44,7 +44,7 @@ struct BraveUX {
 
     static let PrefKeyIsToolbarHidingEnabled = "PrefKeyIsToolbarHidingEnabled"
 
-    static let BackgroundColorForBookmarksHistoryAndTopSites = UIColor(white: 242/255.0, alpha: 1.0)
+    static let BackgroundColorForBookmarksHistoryAndTopSites = UIColor(white: 1.0, alpha: 1.0)
     
     static let BackgroundColorForTopSitesPrivate = UIColor(white: 42 / 255.0, alpha: 1.0)
     
@@ -100,6 +100,7 @@ struct BraveUX {
     static let CancelTextColor = LocationBarTextColor
     // The toolbar button color (for the Normal state). Using default highlight color ATM
     static let ActionButtonTintColor = UIColor.black
+    static let ActionButtonPrivateTintColor = UIColor.white
     
     // The toolbar button color when (for the Selected state).
     static let ActionButtonSelectedTintColor = BraveUX.DefaultBlue

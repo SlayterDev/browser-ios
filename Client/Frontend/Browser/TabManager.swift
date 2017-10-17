@@ -157,7 +157,8 @@ class TabManager : NSObject {
             return nil
         }
         
-        return self.tabs.internalTabList.index(of: selectedTab)
+        
+        return tabs.displayedTabsForCurrentPrivateMode.index(of: selectedTab)
     }
     
     func move(tab: Browser, from: Int, to: Int) {
@@ -190,6 +191,20 @@ class TabManager : NSObject {
             }
         }
 
+        return nil
+    }
+    
+    func indexOfWebView(_ webView: UIWebView) -> UInt? {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+        
+        var count = UInt(0)
+        for tab in tabs.internalTabList {
+            if tab.webView === webView {
+                return count
+            }
+            count = count + 1
+        }
+        
         return nil
     }
 
@@ -393,8 +408,6 @@ class TabManager : NSObject {
         if webviews < maxInMemTabs {
             return
         }
-
-        print("webviews \(webviews)")
 
         var oldestTime: Timestamp = Date.now()
         var oldestBrowser: Browser? = nil

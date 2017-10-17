@@ -12,6 +12,7 @@ import Deferred
 private let log = Logger.browserLogger
 
 private let ThumbnailIdentifier = "Thumbnail"
+private let NewTopIdentifier = "NewTop"
 
 extension CGSize {
     public func widthLargerOrEqualThanHalfIPad() -> Bool {
@@ -136,6 +137,7 @@ class TopSitesPanel: UIViewController {
         collection.delegate = self
         collection.dataSource = PrivateBrowsing.singleton.isOn ? nil : dataSource
         collection.register(ThumbnailCell.self, forCellWithReuseIdentifier: ThumbnailIdentifier)
+        collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: NewTopIdentifier)
         collection.keyboardDismissMode = .onDrag
         collection.accessibilityIdentifier = "Top Sites View"
         // Entire site panel, including the stats view insets
@@ -690,10 +692,11 @@ fileprivate class TopSitesDataSource: NSObject, UICollectionViewDataSource {
 
     @objc func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // If there aren't enough data items to fill the grid, look for items in suggested sites.
+        // + 1 for new topsite button.
         if let layout = collectionView.collectionViewLayout as? TopSitesLayout {
-            return min(count(), layout.thumbnailCount)
+            return min(count(), layout.thumbnailCount)// + 1
         }
-
+        
         return 0
     }
 
@@ -739,15 +742,17 @@ fileprivate class TopSitesDataSource: NSObject, UICollectionViewDataSource {
                 }
             }
             else {
-                cell.imageView.sd_setImage(with: iconUrl, completed: { (img, err, type, url) in
-                    guard err == nil, let img = img else {
-                        // avoid recheck to find an icon when none can be found, hack skips FaviconFetch
-                        ImageCache.shared.cache(FaviconFetcher.defaultFavicon, url: cacheWithUrl, type: .square, callback: nil)
-                        cell.imageView.image = FaviconFetcher.defaultFavicon
-                        return
-                    }
-                    ImageCache.shared.cache(img, url: cacheWithUrl, type: .square, callback: nil)
-                })
+                postAsyncToMain {
+                    cell.imageView.sd_setImage(with: iconUrl, completed: { (img, err, type, url) in
+                        guard err == nil, let img = img else {
+                            // avoid recheck to find an icon when none can be found, hack skips FaviconFetch
+                            ImageCache.shared.cache(FaviconFetcher.defaultFavicon, url: cacheWithUrl, type: .square, callback: nil)
+                            cell.imageView.image = FaviconFetcher.defaultFavicon
+                            return
+                        }
+                        ImageCache.shared.cache(img, url: cacheWithUrl, type: .square, callback: nil)
+                    })
+                }
             }
         })
     }
@@ -914,20 +919,26 @@ fileprivate class TopSitesDataSource: NSObject, UICollectionViewDataSource {
     }
 
     @objc func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        // Cells for the top site thumbnails.
-        let site = self[indexPath.item]!
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThumbnailIdentifier, for: indexPath) as! ThumbnailCell
-        
-        // TODO: Can be refactored, currently used primarily for title differences
-        if let site = site as? SuggestedSite {
-            configureCell(cell, atIndexPath: indexPath, forSuggestedSite: site)
-        } else {
-            configureCell(cell, atIndexPath: indexPath, forSite: site, isEditing: editingThumbnails)
+        // Display new Topsite button
+        if indexPath.row == self.sites.count {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewTopIdentifier, for: indexPath)
+            return cell
         }
+        else {
+            // Cells for the top site thumbnails.
+            let site = self[indexPath.item]!
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThumbnailIdentifier, for: indexPath) as! ThumbnailCell
+            
+            // TODO: Can be refactored, currently used primarily for title differences
+            if let site = site as? SuggestedSite {
+                configureCell(cell, atIndexPath: indexPath, forSuggestedSite: site)
+            } else {
+                configureCell(cell, atIndexPath: indexPath, forSite: site, isEditing: editingThumbnails)
+            }
 
-        cell.updateLayoutForCollectionViewSize(collectionView.bounds.size, traitCollection: collectionView.traitCollection, forSuggestedSite: false)
-        return cell
+            cell.updateLayoutForCollectionViewSize(collectionView.bounds.size, traitCollection: collectionView.traitCollection, forSuggestedSite: false)
+            return cell
+        }
     }
 }
 

@@ -512,15 +512,17 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 }
             }
             else {
-                cell.imageView?.sd_setImage(with: iconUrl, completed: { (img, err, type, url) in
-                    guard err == nil, let img = img else {
-                        // avoid retrying to find an icon when none can be found, hack skips FaviconFetch
-                        ImageCache.shared.cache(FaviconFetcher.defaultFavicon, url: cacheWithUrl, type: .square, callback: nil)
-                        cell.imageView?.image = FaviconFetcher.defaultFavicon
-                        return
-                    }
-                    ImageCache.shared.cache(img, url: cacheWithUrl, type: .square, callback: nil)
-                })
+                postAsyncToMain {
+                    cell.imageView?.sd_setImage(with: iconUrl, completed: { (img, err, type, url) in
+                        guard let img = img else {
+                            // avoid retrying to find an icon when none can be found, hack skips FaviconFetch
+                            ImageCache.shared.cache(FaviconFetcher.defaultFavicon, url: cacheWithUrl, type: .square, callback: nil)
+                            cell.imageView?.image = FaviconFetcher.defaultFavicon
+                            return
+                        }
+                        ImageCache.shared.cache(img, url: cacheWithUrl, type: .square, callback: nil)
+                    })
+                }
             }
         })
     }
@@ -568,7 +570,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 self.showEditBookmarkController(tableView, indexPath: indexPath)
             }
             else {
-                print("Selected folder")
                 let nextController = BookmarksPanel(folder: bookmark)
                 nextController.homePanelDelegate = self.homePanelDelegate
                 
