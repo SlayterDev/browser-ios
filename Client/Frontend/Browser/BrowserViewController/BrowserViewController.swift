@@ -591,9 +591,9 @@ class BrowserViewController: UIViewController {
             make.left.right.equalTo(self.footer)
             make.height.equalTo(UIConstants.ToolbarHeight) // Set this to toolbar height. Use BottomToolbarHeight for hiding footer
             if #available(iOS 11.0, *) {
-                make.bottom.equalTo(self.view).inset(self.view.safeAreaInsets.bottom)
+                make.bottom.equalTo(self.footer).inset(self.view.safeAreaInsets.bottom)
             } else {
-                make.bottom.equalTo(self.view)
+                make.bottom.equalTo(self.footer)
             }
         }
         urlBar.setNeedsUpdateConstraints()

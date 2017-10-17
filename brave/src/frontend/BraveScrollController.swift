@@ -184,7 +184,7 @@ private extension BraveScrollController {
                     scrollWithDelta(delta)
                 }
                 
-                if headerTopOffset == -topScrollHeight {
+                if headerTopOffset == -topScrollHeight && footerBottomOffset == footerHeight { // Need to check both heights since on iPhone X footer may be taller
                     toolbarState = .collapsed
                 } else if headerTopOffset == 0 {
                     toolbarState = .visible
@@ -256,7 +256,7 @@ private extension BraveScrollController {
     }
     
     func checkScrollHeightIsLargeEnoughForScrolling() -> Bool {
-        return (UIScreen.main.bounds.size.height + 2 * UIConstants.ToolbarHeight) < scrollView?.contentSize.height ?? 0
+        return (UIScreen.main.bounds.size.height + UIConstants.ToolbarHeight + UIConstants.BottomToolbarHeight) < scrollView?.contentSize.height ?? 0
     }
     
     func showOrHideWebViewContainerToolbar() {
